@@ -110,6 +110,7 @@
     <ClCompile Include="WxUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\interceptorConfig.h" />
     <ClInclude Include="Config\AdvancedConfigPane.h" />
     <ClInclude Include="Config\AudioConfigPane.h" />
     <ClInclude Include="Config\GameCubeConfigPane.h" />

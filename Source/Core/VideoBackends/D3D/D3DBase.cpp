@@ -2,6 +2,8 @@
 // Licensed under GPLv2+
 // Refer to the license.txt file included.
 
+#include "interceptorConfig.h"
+
 #include "Common/StringUtil.h"
 #include "VideoBackends/D3D/D3DBase.h"
 #include "VideoBackends/D3D/D3DState.h"
@@ -12,6 +14,7 @@
 #include "InputCommon/InputConfig.h"
 #include "Core/HW/GCPad.h"
 #include "Core/HW/GCPadEmu.h"
+#include "Core/HW/SI_GCAdapter.h"
 
 namespace DX11
 {
@@ -510,9 +513,12 @@ void Reset()
 	SetDebugObjectName((ID3D11DeviceChild*)backbuf->GetRTV(), "backbuffer render target view");
 }
 
-//#include <fstream>
-//std::ofstream file("controllerCheck.txt");
+#ifdef INTERCEPTOR_DEBUG_CONTROLLER
+#include <fstream>
+std::ofstream file("controllerCheck.txt");
+#endif
 UINT controllerFrameID = 0;
+
 
 bool BeginFrame()
 {
@@ -527,10 +533,20 @@ bool BeginFrame()
     {
         GCPad *pad = (GCPad*)controller;
         pad->GetInput(&padState);
-        //file << padState.button << ' ' << padState.stickX << ' ' << padState.stickY << ' ';
+        SI_GCAdapter::Input(pad->m_index, &padState);
+
+#ifdef INTERCEPTOR_DEBUG_CONTROLLER
+        const std::string padDesc = padState.toString();
+        file << controllerFrameID << '\t' << pad->m_index << '\t';
+        file <<  padState.button << '\t' << padDesc << '\t';
+        //file << padState.stickX << ' ' << padState.stickY << ' ';
         //file << padState.substickX << ' ' << padState.substickY << ' ' << padState.analogA << ' ' << padState.analogB << std::endl;
-        //file << frameID << '\t' << pad->m_index << '\t' << padState.button << std::endl;
-        context->Map((ID3D11Resource*)&padState, pad->m_index, (D3D11_MAP)1235, controllerFrameID, nullptr);
+        file << std::endl;
+#endif
+        if (useD3D11Interceptor)
+        {
+            context->Map((ID3D11Resource*)&padState, pad->m_index, (D3D11_MAP)1235, controllerFrameID, nullptr);
+        }
     }
     controllerFrameID++;
 

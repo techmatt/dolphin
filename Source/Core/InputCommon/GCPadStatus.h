@@ -35,8 +35,26 @@ enum PadButton
 	PAD_BUTTON_START = 0x1000,
 };
 
+#include <string>
 struct GCPadStatus
 {
+    std::string toString() const
+    {
+        std::string result = "";
+        if (button & PAD_BUTTON_A) result += "A,";
+        if (button & PAD_BUTTON_B) result += "B,";
+        if (button & PAD_BUTTON_X) result += "X,";
+        if (button & PAD_BUTTON_Y) result += "Y,";
+        if (button & PAD_TRIGGER_L) result += "L,";
+        if (button & PAD_TRIGGER_R) result += "R,";
+        if (button & PAD_TRIGGER_Z) result += "Z,";
+        if (button & PAD_BUTTON_LEFT) result += "padLeft,";
+        if (button & PAD_BUTTON_RIGHT) result += "padRight,";
+        if (button & PAD_BUTTON_UP) result += "padUp,";
+        if (button & PAD_BUTTON_DOWN) result += "padDown,";
+        return result;
+    }
+
 	u16 button;                 // Or-ed PAD_BUTTON_* and PAD_TRIGGER_* bits
 	u8  stickX;                 // 0 <= stickX       <= 255
 	u8  stickY;                 // 0 <= stickY       <= 255

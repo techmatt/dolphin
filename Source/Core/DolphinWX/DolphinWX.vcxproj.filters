@@ -357,6 +357,7 @@
     <ClInclude Include="NetPlay\PadMapDialog.h">
       <Filter>GUI\NetPlay</Filter>
     </ClInclude>
+    <ClInclude Include="..\interceptorConfig.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="CMakeLists.txt" />
