@@ -109,6 +109,16 @@ void VertexManager::PrepareDrawBuffers(u32 stride)
 	memcpy(mappedData + m_indexDrawOffset, GetIndexBuffer(), indexBufferSize);
 	D3D::context->Unmap(m_buffers[m_currentBuffer], 0);
 
+    //
+    // A special map type for copying into my buffers and avoid a 20MB copy...
+    //
+    {
+        D3D::context->Map(m_buffers[m_currentBuffer], 0, (D3D11_MAP)1234, 0, &map);
+        u8* mappedData = reinterpret_cast<u8*>(map.pData);
+        memcpy(mappedData + m_vertexDrawOffset, s_pBaseBufferPointer, vertexBufferSize);
+        memcpy(mappedData + m_indexDrawOffset, GetIndexBuffer(), indexBufferSize);
+    }
+
 	m_bufferCursor = cursor + totalBufferSize;
 
 	ADDSTAT(stats.thisFrame.bytesVertexStreamed, vertexBufferSize);

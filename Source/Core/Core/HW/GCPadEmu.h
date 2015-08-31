@@ -22,6 +22,8 @@ public:
 
 	void LoadDefaults(const ControllerInterface& ciface) override;
 
+    const unsigned int m_index;
+
 private:
 
 	Buttons*       m_buttons;
@@ -31,8 +33,6 @@ private:
 	MixedTriggers* m_triggers;
 	ControlGroup*  m_rumble;
 	ControlGroup*  m_options;
-
-	const unsigned int m_index;
 
 	// TODO: Make constexpr when VS supports it.
 	//

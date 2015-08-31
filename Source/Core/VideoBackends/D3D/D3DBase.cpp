@@ -8,6 +8,11 @@
 #include "VideoBackends/D3D/D3DTexture.h"
 #include "VideoCommon/VideoConfig.h"
 
+#include "InputCommon/ControllerEmu.h"
+#include "InputCommon/InputConfig.h"
+#include "Core/HW/GCPad.h"
+#include "Core/HW/GCPadEmu.h"
+
 namespace DX11
 {
 
@@ -505,6 +510,10 @@ void Reset()
 	SetDebugObjectName((ID3D11DeviceChild*)backbuf->GetRTV(), "backbuffer render target view");
 }
 
+//#include <fstream>
+//std::ofstream file("controllerCheck.txt");
+UINT controllerFrameID = 0;
+
 bool BeginFrame()
 {
 	if (bFrameInProgress)
@@ -512,6 +521,19 @@ bool BeginFrame()
 		PanicAlert("BeginFrame called although a frame is already in progress");
 		return false;
 	}
+
+    GCPadStatus padState;
+    for (ControllerEmu* controller : Pad::GetConfig()->controllers)
+    {
+        GCPad *pad = (GCPad*)controller;
+        pad->GetInput(&padState);
+        //file << padState.button << ' ' << padState.stickX << ' ' << padState.stickY << ' ';
+        //file << padState.substickX << ' ' << padState.substickY << ' ' << padState.analogA << ' ' << padState.analogB << std::endl;
+        //file << frameID << '\t' << pad->m_index << '\t' << padState.button << std::endl;
+        context->Map((ID3D11Resource*)&padState, pad->m_index, (D3D11_MAP)1235, controllerFrameID, nullptr);
+    }
+    controllerFrameID++;
+
 	bFrameInProgress = true;
 	return (device != nullptr);
 }
