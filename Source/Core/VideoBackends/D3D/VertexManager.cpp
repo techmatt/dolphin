@@ -2,6 +2,7 @@
 // Licensed under GPLv2+
 // Refer to the license.txt file included.
 
+#include "interceptorConfig.h"
 #include "VideoBackends/D3D/BoundingBox.h"
 #include "VideoBackends/D3D/D3DBase.h"
 #include "VideoBackends/D3D/D3DState.h"
@@ -112,6 +113,7 @@ void VertexManager::PrepareDrawBuffers(u32 stride)
     //
     // A special map type for copying into my buffers and avoid a 20MB copy...
     //
+    if (useD3D11Interceptor)
     {
         D3D::context->Map(m_buffers[m_currentBuffer], 0, (D3D11_MAP)1234, 0, &map);
         u8* mappedData = reinterpret_cast<u8*>(map.pData);
